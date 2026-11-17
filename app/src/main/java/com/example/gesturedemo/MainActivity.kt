@@ -4,10 +4,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -22,6 +18,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.ui.Alignment
+import androidx.compose.material3.Text
 
 
 class MainActivity : ComponentActivity() {
@@ -30,7 +35,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             GestureDemoTheme {
-
+                MainScreen()
             }
         }
     }
@@ -38,9 +43,37 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun MainScreen(modifier: Modifier = Modifier) {
-    ClickDemo(modifier)
+    TapPressDemo(modifier)
 }
 
+@Composable
+fun TapPressDemo(modifier: Modifier = Modifier) {
+    var textState by remember {mutableStateOf("Waiting ....")}
+    val tapHandler = { status : String ->
+        textState = status
+    }
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier.fillMaxSize()
+    ) {
+        Box(
+            Modifier
+                .padding(10.dp)
+                .background(Color.Blue)
+                .size(100.dp)
+                .pointerInput(Unit) {
+                    detectTapGestures(
+                        onPress = { tapHandler("onPress Detected") },
+                        onDoubleTap = { tapHandler("onDoubleTap Detected") },
+                        onLongPress = { tapHandler("onLongPress Detected") },
+                        onTap = { tapHandler("onTap Detected") }
+                    )
+                }
+        )
+        Spacer(Modifier.height(10.dp))
+        Text(textState)
+    }
+}
 
 @Composable
 fun ClickDemo(modifier: Modifier = Modifier) {
