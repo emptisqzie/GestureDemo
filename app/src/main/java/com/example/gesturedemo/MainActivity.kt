@@ -44,6 +44,9 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.foundation.gestures.rememberTransformableState
+import androidx.compose.foundation.gestures.transformable
+import androidx.compose.ui.graphics.graphicsLayer
 
 
 class MainActivity : ComponentActivity() {
@@ -60,7 +63,34 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun MainScreen(modifier: Modifier = Modifier) {
-    ScrollModifiers(modifier)
+    MultiTouchDemo(modifier)
+}
+
+
+@Composable
+fun MultiTouchDemo(modifier: Modifier = Modifier) {
+    var scale by remember { mutableFloatStateOf(1f) }
+
+    val state = rememberTransformableState {
+            scaleChange, offsetChange, rotationChange ->
+        scale *= scaleChange
+    }
+
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = modifier.fillMaxSize()
+    ) {
+        Box(
+            Modifier
+                .graphicsLayer(
+                    scaleX = scale,
+                    scaleY = scale
+                )
+                .transformable(state = state)
+                .background(Color.Blue)
+                .size(100.dp)
+        )
+    }
 }
 
 
