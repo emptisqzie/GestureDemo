@@ -34,6 +34,8 @@ import androidx.compose.material3.Text
 import androidx.compose.ui.unit.IntOffset
 import kotlin.math.roundToInt
 import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.gestures.rememberScrollableState
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.runtime.mutableFloatStateOf
 
 
@@ -51,8 +53,36 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun MainScreen(modifier: Modifier = Modifier) {
-    PointerInputDrag(modifier)
+    ScrollableModifier(modifier)
 }
+
+
+@Composable
+fun ScrollableModifier(modifier: Modifier = Modifier) {
+    var offset by remember { mutableFloatStateOf(0f) }
+
+    Box(
+        modifier
+            .fillMaxSize()
+            .scrollable(
+                orientation = Orientation.Vertical,
+                state = rememberScrollableState { distance ->
+                    offset += distance
+                    distance
+                }
+            )
+    ) {
+        Box(
+            modifier = Modifier
+                .size(90.dp)
+                .offset {
+                    IntOffset(0, offset.roundToInt())
+                }
+                .background(Color.Red)
+        )
+    }
+}
+
 
 @Composable
 fun PointerInputDrag(modifier: Modifier = Modifier) {
